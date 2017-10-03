@@ -11,7 +11,18 @@ export class ProductListComponent implements OnInit{
   imageWidth: number = 40;
   imageMargin: number = 2;
   showImage: boolean = false;
-  listFilter: string = 'cart';
+  
+  _listFilter: string;
+  get listFilter(): string {
+    return this._listFilter;
+  }
+
+  set listFilter(value: string){
+    this._listFilter = value;
+    this.filteredProducts = this.listFilter? this.performFilter(this.listFilter): this.products;
+  }
+
+  filteredProducts: IProduct[];
   products: IProduct[] = [
     {
       "productId": 2,
@@ -20,7 +31,7 @@ export class ProductListComponent implements OnInit{
       "releaseDate": "March 18,2017",
       "description": "15 Gallon Capacity Rolling Garden Cart",
       "price": 32.99,
-      "starRating": 4.2,
+      "starRating": 3.2,
       "imageUrl": "https://openclipart.org/download/58471/garden-cart.svg"
     },
     {      
@@ -30,7 +41,7 @@ export class ProductListComponent implements OnInit{
       "releaseDate": "March 21, 2017",
       "description": "Steel Hammer",
       "price": 8.9,
-      "starRating": 4.28,
+      "starRating": 2.2,
       "imageUrl": "https://openclipart.org/download/193438/freehammer.svg"
     }
   ];
@@ -41,5 +52,20 @@ export class ProductListComponent implements OnInit{
 
   ngOnInit (): void {
     console.log ('In On Init');
+  }
+
+  constructor(){
+    this.filteredProducts = this.products;
+    this.listFilter = "cart";
+  }
+
+  performFilter(filterBy: string): IProduct[] {
+    filterBy = filterBy.toLocaleLowerCase();
+    return this.products.filter((product : IProduct) => 
+            product.productName.toLocaleLowerCase().indexOf(filterBy)!= -1);
+  }
+
+  onRatingClicked(message: string): void{
+    this.pageTitle = 'Product List: ' + message;
   }
 }
